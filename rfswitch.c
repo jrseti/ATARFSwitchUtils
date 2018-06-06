@@ -1,11 +1,12 @@
 /* 
- * switch.c
+ * rfswitch.c
+ * Jon Richards - SETI Institute, June 06, 2018
  * 
  * This program controls the Mini Circuits RF switch PN: USB-1SP8T-63H
- * This program was modified from an exacple located at:
+ * This program was modified from an example located at:
  * https://www.minicircuits.com/softwaredownload/Prog_Examples_Troubleshooting.pdf
  * The program has been modified to allow more than one device and print help.
- * Run ./switch with no arguments to print out help.
+ * Run rfswitch with no arguments to print out help.
  */
 #include <hid.h>
 #include <stdio.h>

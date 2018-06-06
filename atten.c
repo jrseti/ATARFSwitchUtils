@@ -1,3 +1,15 @@
+/*
+ * atten.c
+ * Jon Richards - SETI Institute, June 06, 2018
+ *
+ * This program controls the Mini Circuits attenuateo PN: RUDAT-6000-30
+ * This program was modified from an example located at:
+ * https://www.minicircuits.com/softwaredownload/Prog_Examples_Troubleshooting.pdf
+ * The program has been modified to allow more than one device and print help.
+ * Run atten with no arguments to print out help.
+ */
+
+
 // Requires libusb and libhid libraries for USB control available under GNU GPL license
 #include <usb.h>
 #include <hid.h>
