@@ -29,6 +29,7 @@ command line arguments.
 
 Minicircuits rf switch controller. PN: USB-1SP8T-63H
 
+```
 rfswitch <state> <rf switch number>
   state = 
     -1 to print out the serial number and part number only, then exits.
@@ -42,9 +43,11 @@ rfswitch <state> <rf switch number>
     (they are labeled below each unit)
 Will print OK\n of successful. Otherwise an error will be reported.
 **REMEMBER to run as root!!**
+```
 
 **atten**
 
+```
 Minicircuits attenuator. PN: RUDAT-6000-30
 
 atten <db> <rf switch number>
@@ -56,6 +59,7 @@ atten <db> <rf switch number>
     (they are labeled below each unit)
 Will print OK,<atten level read from unit>\n if successful. Otherwise an error will be reported.
 **REMEMBER to run as root!!**
+```
 
 
 
