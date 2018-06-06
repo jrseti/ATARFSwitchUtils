@@ -8,14 +8,13 @@ https://www.minicircuits.com/softwaredownload/Prog_Examples_Troubleshooting.pdf
 
 To prepare your system, type the following:
 
-  Download libhid-0.2.16.tar.gz from somewhere, unzip it.
-
-  a. sudo apt-get install libusb-dev
-  b. cd libhid-0.2.16
-  c. ./configure --enable-werror=no
-  d. make
-  e. sudo make install
-  f. sudo ldconfig
+  1. Download libhid-0.2.16.tar.gz from somewhere, unzip it.
+  2. sudo apt-get install libusb-dev
+  3. cd libhid-0.2.16
+  4. ./configure --enable-werror=no
+  5. make
+  6. sudo make install
+  7. sudo ldconfig
 
 To build the program:
 
