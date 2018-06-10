@@ -36,10 +36,8 @@ void printHelp() {
 	fprintf(stderr, "rfswitch <state> <rf switch number>\n");
         fprintf(stderr, "  state = \n");
 	fprintf(stderr, "    -1 to print out the serial number and part number only, then exits.\n");
-        fprintf(stderr, "    1 to energize sw 1 & de-energize sw 2\n");
-        fprintf(stderr, "    2 to energize sw 2 & de-energize sw 1\n");
-        fprintf(stderr, "    3 to energize sw 1 ,2\n");
-        fprintf(stderr, "    etc....\n");
+	fprintf(stderr, "    -2 to print out the switch number that is active, then exits.\n");
+        fprintf(stderr, "    1 .. 8, turn on a switch, turn the others off\n");
         fprintf(stderr, "  rf switch number (as of June 06, 2018)\n");
         fprintf(stderr, "    0 == left unit, SN: 1180422005\n");
         fprintf(stderr, "    1 == right unit, SN: 1180422007\n");
@@ -144,27 +142,50 @@ void Get_SN (char* SNstr)
 		fprintf(stderr, "hid_interrupt_read failed with return code %d\n", ret); }
 
 }
-void Set_Switch ( unsigned char **switchingCode)
+void Set_Switch ( unsigned char state)
 {
-	int i;
-	char PACKETreceive[SEND_PACKET_LEN];
-	// Writing / Reading From USB
-	PACKET[0]=9; // switching command
-	PACKET[1]= atoi(switchingCode[1]); // switching code:
-	// 0 - de-energize all switches
-	// 1 to energize sw 1 & de-energize sw 2
-	// 2 to energize sw 2 & de-energize sw 1
-	// 3 to energize sw 1 ,2
-	// etc.
+	int i = 0;
+        char PACKETreceive[SEND_PACKET_LEN];
+        PACKET[0] = 1;
+        sprintf(PACKET+1, ":SP8T:STATE:%d", state);
 	ret = hid_interrupt_write(hid, 0x01, PACKET, SEND_PACKET_LEN,1000);
 	if (ret != HID_RET_SUCCESS) {
-		fprintf(stderr, "hid_interrupt_write failed with return code %d\n", ret);
+		fprintf(stderr, "hid_interrupt_write failed with return code, sending Set_Switch() %d\n", ret);
 	}
+	memset(PACKETreceive, 0, sizeof(PACKETreceive));
 	ret = hid_interrupt_read(hid, 0x01, PACKETreceive, SEND_PACKET_LEN,1000);
+	//for(i=0;i<16; i++) printf("[%d,%c]", PACKETreceive[i], PACKETreceive[i]);
+	//for(i=0;i<16; i++) printf("[%c]", PACKETreceive[i]);
+	//printf("\n");
 	// Read packet Packetreceive[0]=1
 	if (ret != HID_RET_SUCCESS) {
-		fprintf(stderr, "hid_interrupt_read failed with return code %d\n", ret); }
+		fprintf(stderr, "hid_interrupt_read failed with return code reading Set_Switch() %d\n", ret); }
 }
+
+int Get_Switch ()
+{
+        int i = 0;
+        char PACKETreceive[SEND_PACKET_LEN];
+
+        PACKET[0] = 1;
+        sprintf(PACKET+1, ":SP8T:STATE?");
+        ret = hid_interrupt_write(hid, 0x01, PACKET, SEND_PACKET_LEN,1000);
+        if (ret != HID_RET_SUCCESS) {
+                fprintf(stderr, "hid_interrupt_write failed with return code, sending Set_Switch() %d\n", ret);
+		return -1;
+        }
+        memset(PACKETreceive, 0, sizeof(PACKETreceive));
+        ret = hid_interrupt_read(hid, 0x01, PACKETreceive, SEND_PACKET_LEN,1000);
+        //for(i=0;i<16; i++) printf("[%d,%c]", PACKETreceive[i], PACKETreceive[i]);
+        //printf("\n");
+        if (ret != HID_RET_SUCCESS) {
+                fprintf(stderr, "hid_interrupt_read failed with return code reading Set_Switch() %d\n", ret); 
+		return -1;
+	}
+
+	return (int)(PACKETreceive[1] - 48);
+}
+
 
 void list_sn_all_attached() {
 
@@ -213,7 +234,7 @@ int main( int argc, unsigned char **argv)
 	}
 
 	////////////// Switching //////////////////
-	if(atoi(argv[1]) < 0) {
+	if(atoi(argv[1]) == -1) {
 	  char PNreceive[SEND_PACKET_LEN];
 	  char SNreceive[SEND_PACKET_LEN];
 	  int StrLen1;
@@ -224,7 +245,13 @@ int main( int argc, unsigned char **argv)
 	  exit(0);
 	}
 
-	Set_Switch(argv);
+	if(atoi(argv[1]) >= 0) {
+		Set_Switch((unsigned char)atoi(argv[1]));
+	}
+	else if(atoi(argv[1]) == -2) {
+	  printf("Switch state: %d\n", Get_Switch());
+	}
+
 	//////////////////////////////////////////////
 	ret = hid_close(hid);
 	if (ret != HID_RET_SUCCESS) {

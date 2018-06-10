@@ -33,10 +33,8 @@ Minicircuits rf switch controller. PN: USB-1SP8T-63H
 rfswitch <state> <rf switch number>
   state = 
     -1 to print out the serial number and part number only, then exits.
-    1 to energize sw 1 & de-energize sw 2
-    2 to energize sw 2 & de-energize sw 1
-    3 to energize sw 1 ,2
-    etc....
+    -2 to print out the switch number that is active, then exits.
+    1 .. 8, turn on a switch, turn the others off
   rf switch number (as of June 06, 2018)
     0 == left unit, SN: 1180422005
     1 == right unit, SN: 1180422007
